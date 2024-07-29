@@ -15,17 +15,17 @@ export class AdminsController {
   }
 
 
-//   @Post('createJobs')
-//   async createJob(@Body() createJobDto: CreateJobDto): Promise<{ msg: string }> {
-//     try {
-//       const job = await this.adminsService.createJob(createJobDto);
-//       return { msg: 'created'};
-//     } catch (error) {
-//       throw new NotFoundException('Error creating job');
-//     }
-//   }
+  // @Post('createJobs') // created from /jobs
+  // async createJob(@Body() createJobDto: CreateJobDto): Promise<{ msg: string }> {
+  //   try {
+  //     const job = await this.adminsService.createJob(createJobDto);
+  //     return { msg: 'created'};
+  //   } catch (error) {
+  //     throw new NotFoundException('Error creating job');
+  //   }
+  // }
 
-  // Delete a job by ID
+
 //   @Delete('jobs/:id')
 //   async deleteJob(@Param('id') jobId: string): Promise<{ msg: string }> {
 //     try {

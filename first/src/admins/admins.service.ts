@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Admin, AdminDocument } from './schemas/admin.schema';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { Job, JobDocument, JobSchema } from '../jobs/schemas/jobs.schema'; 
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

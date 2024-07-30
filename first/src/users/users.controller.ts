@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post, Patch, Delete, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, Delete, Query, Res, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express'; 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
 
   @Get()
   async findAll() {
@@ -22,8 +24,15 @@ export class UsersController {
   }
 
   @Post('login')
-  async login(@Body() user: User) {
-//return this.usersService.login(user); // TODO
+  async login(@Body() { email, password }: User, @Res() res: Response) {
+    const user = await this.usersService.validateUser(email, password);
+    if (!user) {
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Invalid credentials' });
+    }
+
+    const token = await this.authService.createToken(user._id.toString());
+    res.setHeader('Authorization', `Bearer ${token}`);
+    return res.status(HttpStatus.OK).json({ message: 'Login successful' });
   }
 
   @Patch() 

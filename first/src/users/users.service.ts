@@ -77,6 +77,27 @@ export class UsersService {
     }
   }
 
+
+
+
+  async validateUser(email: string, password: string): Promise<UserDocument | null> {
+    try {
+      const user = await this.userModel.findOne({ email }).exec();
+      if (!user) {
+        return null;
+      }
+
+      const isPasswordMatching = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatching) {
+        return null;
+      }
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException('Error validating user');
+    }
+  }
+
  /* async update(updatedUser: { name?: string; email?: string }) {
     try {
       const user = await this.userModel.findOneAndUpdate(
@@ -95,15 +116,15 @@ export class UsersService {
 */
 
 
-  async delete(email: string) {
-    try {
-      const user = await this.userModel.findOneAndDelete({ email }).exec();
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      return { msg: 'User deleted', user };
-    } catch (error) {
-      throw new BadRequestException('Error deleting user');
-    }
-  }
+  // async delete(email: string) {
+  //   try {
+  //     const user = await this.userModel.findOneAndDelete({ email }).exec();
+  //     if (!user) {
+  //       throw new NotFoundException('User not found');
+  //     }
+  //     return { msg: 'User deleted', user };
+  //   } catch (error) {
+  //     throw new BadRequestException('Error deleting user');
+  //   }
+  // }
 }

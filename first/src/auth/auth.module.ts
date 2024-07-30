@@ -1,18 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '2m' },
-      }),
-      inject: [ConfigService],
-    }),
+    JwtModule.register({
+      secret: 'joydeep_secret_key',
+      signOptions: { expiresIn: '2m' },
+    }), 
+    forwardRef(() => UsersModule),
   ],
   providers: [AuthService],
   exports: [AuthService],

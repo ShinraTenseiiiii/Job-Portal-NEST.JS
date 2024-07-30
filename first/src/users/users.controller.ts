@@ -2,11 +2,15 @@ import { Body, Controller, Get, Post, Patch, Delete, Query, Res, HttpStatus } fr
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { Response } from 'express'; 
+
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService
+  ) {}
 
   @Get()
   async findAll() {
@@ -24,23 +28,26 @@ export class UsersController {
   }
 
   @Post('login')
-  async login(@Body() { email, password }: User, @Res() res: Response) {
+  async login(@Body() { email, password }: { email: string; password: string }, @Res() res: Response) {
     const user = await this.usersService.validateUser(email, password);
+
     if (!user) {
       return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Invalid credentials' });
     }
 
-    const token = await this.authService.createToken(user._id.toString());
-    res.setHeader('Authorization', `Bearer ${token}`);
+    const { accessToken } = await this.authService.login(email, password);
+    
+    res.setHeader('Authorization', `Bearer ${accessToken}`);
     return res.status(HttpStatus.OK).json({ message: 'Login successful' });
   }
 
   @Patch() 
   async update(@Body() userUpdate: { name?: string; email?: string }) {
+    // Update logic here
   }
 
   @Delete() 
   async delete(@Body() user: { email: string }) {
-    
+    // Delete logic here
   }
 }
